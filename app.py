@@ -47,6 +47,15 @@ def convertFiles():  # Makes use of PyPDF library to merge selected files in fil
     merger.close()
 
 
+def changePath():
+    mergedFilePath = filedialog.askdirectory(
+        initialdir="/", title="Select Destination Folder")
+    destAddress.config(state=NORMAL)
+    destAddress.delete(0, END)
+    destAddress.insert(0, f"{mergedFilePath}/")
+    destAddress.config(state=DISABLED)
+
+
 def clearFiles():  # Clears all files from the array and frame
     for widget in frame.winfo_children():
         widget.destroy()
@@ -70,7 +79,8 @@ destAddress.grid(row=7, column=1, columnspan=3)
 destAddress.insert(0, destination)
 destAddress.config(state=DISABLED)
 
-findPath = Button(root, bg="#263D42", fg="white", text="...")
+findPath = Button(root, bg="#263D42", fg="white",
+                  text="...", command=changePath)
 findPath.grid(row=7, column=4)
 
 deleteFiles = Checkbutton(
