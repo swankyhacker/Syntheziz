@@ -1,4 +1,4 @@
-import tkinter as tk
+from tkinter import *
 from tkinter import filedialog, Listbox
 from PyPDF2 import PdfFileMerger, utils
 import os
@@ -6,28 +6,20 @@ import os
 files = []
 destination = "D:/Bruce/Documents/"
 
-root = tk.Tk()
-
-
-def center_window():
-    root.withdraw()
-    root.update_idletasks()  # Update "requested size" from geometry manager
-
-    x = (root.winfo_screenwidth() - root.winfo_reqwidth()) / 2
-    y = (root.winfo_screenheight() - root.winfo_reqheight()) / 2
-    root.geometry("+%d+%d" % (x, y))
-
-    root.deiconify()
+root = Tk()
+root.geometry("630x650")
+root.configure(bg="#263D42")
 
 
 def addFile():
-    filename = filedialog.askopenfilenames(initialdir="/", title="Select Files",
-                                           filetypes=(("PDF", "*.pdf"), ("All Files", "*.*")))
-    for file in filename:
+    selectedFiles = filedialog.askopenfilenames(initialdir="/", title="Select Files",
+                                                filetypes=(("PDF", "*.pdf"), ("All Files", "*.*")))
+    for file in selectedFiles:
         files.append(file)
-        label = tk.Label(frame, text=file[file.rfind(
-            "/")+1:], bg="grey", justify="left", font=("Helvetica", 12))
-        label.pack()
+        fileName = file[file.rfind("/")+1:]
+        label = Label(frame, text=f"~{fileName}", bg="#263D42", fg="white", width=20, anchor=W,
+                      font=("Helvetica", 12))
+        label.grid()
 
 
 def convertFiles():
@@ -47,27 +39,42 @@ def clearFiles():
     files.clear()
 
 
-canvas = tk.Canvas(root, height=600, width=600, bg="#263D42")
-canvas.pack()
+frame = Frame(root, bg="white", width=560, height=400)
+frame.grid_propagate(0)
+frame.grid(row=0, column=0, padx=30, pady=30, columnspan=6, rowspan=6)
 
-frame = tk.Frame(root, bg="white")
-frame.place(width=500, height=400, relx=0.1, rely=0.1)
+destAddress_label = Label(
+    root, text="Destination Address:", bg="#263D42", fg="white")
+destAddress_label.grid(row=7, column=0)
 
-scrollbars = tk.Scrollbar(frame, bg="black", orient="vertical")
-scrollbars.pack(side="right", fill="y")
+destAddress = Entry(root, width=50)
+destAddress.grid(row=7, column=1, columnspan=3)
 
-openFile = tk.Button(root, text="Open File", padx=10, pady=5,
-                     bg="#263D42", fg="white", command=addFile)
-openFile.place(x=100, y=500)
+findPath = Button(root, bg="#263D42", fg="white", text="...")
+findPath.grid(row=7, column=4)
 
-convertFiles = tk.Button(root, text="Convert Files", fg="white",
-                         bg="#263D42", padx=10, pady=5, command=convertFiles)
-convertFiles.place(x=200, y=500)
+deleteFiles = Checkbutton(
+    root, text="Delete files after merging", bg="#263D42", fg="white")
+deleteFiles.grid(row=9, column=0)
 
-clear = tk.Button(root, text="Clear", padx=10, pady=5,
-                  bg="#263D42", fg="white", command=clearFiles)
-clear.place(x=320, y=500)
+openFile = Button(root, text="Open File", padx=10, pady=5, width=10,
+                  bg="#263D42", fg="white", command=addFile)
+openFile.grid(row=7, column=5)
 
-center_window()
+convertFiles = Button(root, text="Convert Files", fg="white", width=10,
+                      bg="#263D42", padx=10, pady=5, command=convertFiles)
+convertFiles.grid(row=8, column=5, pady=15)
+
+clear = Button(root, text="Clear", padx=10, pady=5, width=10,
+               bg="#263D42", fg="white", command=clearFiles)
+clear.grid(row=9, column=5)
 
 root.mainloop()
+
+# # Grid
+# Order of files
+# delete files
+# change destination
+# Exceptions
+# design
+# file duplication
