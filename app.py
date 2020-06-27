@@ -5,6 +5,7 @@ import os
 
 files = []
 destination = "D:/Bruce/Documents/"
+mergedFileName = "Merged"
 
 root = Tk()
 root.geometry("630x650")
@@ -23,7 +24,6 @@ def isDuplicate():  # Checks for duplicate files in files array and asks users f
 
             if(response == 1):
                 addFile(file)
-
         else:
             addFile(file)
 
@@ -39,15 +39,25 @@ def addFile(file):  # Adds a file to files array and file name to frame
 def convertFiles():  # Makes use of PyPDF library to merge selected files in files array
     merger = PdfFileMerger()
 
-    if len(files) > 0:
+    if len(files) > 1:  # Check if more than one file is selected
         for file in files:
             merger.append(file)
-        if not os.path.exists(destAddress.get() + 'merged.pdf'):
-            merger.write(destAddress.get() + 'Merged.pdf')
+            mergedFilePath = destAddress.get() + f'{mergedFileInput.get()}.pdf'
+        # Check if same file already exists in the same directory
+        if not os.path.exists(mergedFilePath):
+            merger.write(mergedFilePath)
+        else:
+            title = "File already exists!"
+            content = "A file with the same name already exists in this directory \n Please select another name and try again"
+            messagebox.showerror(title, content)
+    else:
+        title = "Insufficient Data!"
+        content = "Please select more than one file"
+        messagebox.showerror(title, content)
     merger.close()
 
 
-def changePath():
+def changePath():  # Allows the user to choose the directory in which the merged file is stored
     mergedFilePath = filedialog.askdirectory(
         initialdir="/", title="Select Destination Folder")
     destAddress.config(state=NORMAL)
@@ -79,6 +89,18 @@ destAddress.grid(row=7, column=1, columnspan=3)
 destAddress.insert(0, destination)
 destAddress.config(state=DISABLED)
 
+mergedFile_label = Label(
+    root, text="New file name:", bg="#263D42", fg="white")
+mergedFile_label.grid(row=8, column=0)
+
+mergedFileInput = Entry(root, width=50)
+mergedFileInput.grid(row=8, column=1, columnspan=3)
+mergedFileInput.insert(0, mergedFileName)
+
+fileFormatLabel = Label(root, bg="#263D42", fg="white",
+                        text=".pdf")
+fileFormatLabel.grid(row=8, column=4)
+
 findPath = Button(root, bg="#263D42", fg="white",
                   text="...", command=changePath)
 findPath.grid(row=7, column=4)
@@ -106,10 +128,10 @@ testButton.grid(row=10, column=5)
 root.mainloop()
 
 # # Grid
-# Order of files
 # file duplication
+# change destination
 # custom file name
 # delete files
-# change destination
-# Exceptions
+# Order of files
+# Exceptions: Invalid File Names(Same file in same directory, Null name), File paths(Adding ".","/","\")
 # design
