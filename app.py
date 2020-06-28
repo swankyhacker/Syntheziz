@@ -31,9 +31,25 @@ def isDuplicate():  # Checks for duplicate files in files array and asks users f
 def addFile(file):  # Adds a file to files array and file name to frame
     files.append(file)
     fileName = file[file.rfind("/")+1:]
-    label = Label(frame, text=f"~ {fileName}", bg="#263D42", fg="white", width=20, anchor=W,
-                  font=("Helvetica", 12))
-    label.grid()
+
+    fileFrame = Frame(frame, bg="#263D42", width=558, height=45)
+    fileFrame.grid_propagate(0)
+    fileFrame.grid
+    fileFrame.grid(padx=1, pady=1)
+
+    fileLabel = Label(fileFrame, bg="#263D42", text=f'~ {fileName}',
+                      fg="white", width=48, anchor=W, font=("Times New Roman", 12))
+    fileLabel.grid(column=0, row=0, columnspan=4)
+
+    shiftUp = Button(fileFrame, bg="#263D42", text="↑", fg="white", anchor=N)
+    shiftUp.grid(column=4, row=0, padx=5, pady=10)
+
+    shiftDown = Button(fileFrame, bg="#263D42", text="↓", fg="white", anchor=N)
+    shiftDown.grid(column=5, row=0, pady=10, padx=(0, 40))
+
+    removeFile = Button(fileFrame, bg="#263D42",
+                        text="X", fg="white", anchor=N)
+    removeFile.grid(column=6, row=0, pady=10)
 
 
 def convertFiles():  # Makes use of PyPDF library to merge selected files in files array
