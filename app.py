@@ -18,8 +18,9 @@ def isDuplicate():  # Checks for duplicate files in files array and asks users f
                                                 filetypes=(("PDF", "*.pdf"), ("All Files", "*.*")))
     for file in selectedFiles:
         if file in files:
+            fileName = file[file.rfind("/")+1:]
             title = "Duplicate Files Detected!"
-            content = "Duplicate Files were detected \n Do you still want to include duplicates in the merged result?"
+            content = f'Duplicate File detected \n Do you still want to include {fileName} in the merged result?'
             response = messagebox.askyesno(title, content)
 
             if(response == 1):
