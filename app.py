@@ -4,7 +4,7 @@ from PyPDF2 import PdfFileMerger, utils
 import os
 
 files = []
-destination = "D:/Bruce/Documents/"
+destination = "D:/"
 mergedFileName = "Merged"
 
 root = Tk()
@@ -43,18 +43,22 @@ def convertFiles():  # Makes use of PyPDF library to merge selected files in fil
         for file in files:
             merger.append(file)
             mergedFilePath = destAddress.get() + f'{mergedFileInput.get()}.pdf'
+
         # Check if same file already exists in the same directory
         if not os.path.exists(mergedFilePath):
             merger.write(mergedFilePath)
+            merger.close()    # Close  merger before file deletion to avoid PermissionError
+            deleteFiles()
+
         else:
             title = "File already exists!"
             content = "A file with the same name already exists in this directory \n Please select another name and try again"
             messagebox.showerror(title, content)
+
     else:
         title = "Insufficient Data!"
         content = "Please select more than one file"
         messagebox.showerror(title, content)
-    merger.close()
 
 
 def changePath():  # Allows the user to choose the directory in which the merged file is stored
@@ -66,6 +70,20 @@ def changePath():  # Allows the user to choose the directory in which the merged
     destAddress.config(state=DISABLED)
 
 
+def deleteFiles():  # deletes files after merging if checkbox is selected
+    if varCheck.get() == 1:
+        title = "Delete Files!"
+        content = "Are you sure that you want to delete the individual files that were used for merging?"
+        response = messagebox.askyesno(title, content)
+
+        if response == 1:
+
+            for file in files:
+                os.remove(file)
+
+            clearFiles()
+
+
 def clearFiles():  # Clears all files from the array and frame
     for widget in frame.winfo_children():
         widget.destroy()
@@ -73,7 +91,7 @@ def clearFiles():  # Clears all files from the array and frame
 
 
 def test():
-    return
+    pass
 
 
 frame = Frame(root, bg="white", width=560, height=400)
@@ -105,9 +123,11 @@ findPath = Button(root, bg="#263D42", fg="white",
                   text="...", command=changePath)
 findPath.grid(row=7, column=4)
 
-deleteFiles = Checkbutton(
-    root, text="Delete files after merging", bg="#263D42", fg="white")
-deleteFiles.grid(row=9, column=0)
+varCheck = IntVar()
+deleteBox = Checkbutton(
+    root, text="Delete files after merging", bg="#263D42", fg="black", variable=varCheck)
+deleteBox.deselect()
+deleteBox.grid(row=9, column=0)
 
 openFile = Button(root, text="Open File", padx=10, pady=5, width=10,
                   bg="#263D42", fg="white", command=isDuplicate)
@@ -132,6 +152,12 @@ root.mainloop()
 # change destination
 # custom file name
 # delete files
+
+# disable window during popups
 # Order of files
+# File merged message
+
 # Exceptions: Invalid File Names(Same file in same directory, Null name), File paths(Adding ".","/","\")
+# PermissionError
+
 # design
