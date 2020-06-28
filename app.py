@@ -7,10 +7,16 @@ files = []
 destination = "D:/"
 mergedFileName = "Merged"
 
+# colors
+mainColor = "#eacdc2"
+textColor = "#372549"
+checkBoxColor = "#641220"
+frameColor = "#f2e9e4"
+
 root = Tk()
 root.geometry("630x650")
 root.title("Syntheziz")
-root.configure(bg="#263D42")
+root.configure(bg=mainColor)
 
 
 class FrameItem():  # Individual Frame in list of files
@@ -19,25 +25,25 @@ class FrameItem():  # Individual Frame in list of files
         self.fileName = self.file[self.file.rfind("/")+1:]
         self.index = index
 
-        self.fileFrame = Frame(frame, bg="#263D42", width=558, height=45)
+        self.fileFrame = Frame(frame, bg=mainColor, width=558, height=45)
         self.fileFrame.grid_propagate(0)
         self.fileFrame.grid
         self.fileFrame.grid(padx=1, pady=1)
 
-        self.fileLabel = Label(self.fileFrame, bg="#263D42", text=f'~ {self.fileName}',
-                               fg="white", width=48, anchor=W, font=("Times New Roman", 12))
+        self.fileLabel = Label(self.fileFrame, bg=mainColor, text=f'~ {self.fileName}',
+                               fg=textColor, width=48, anchor=W, font=("Times New Roman", 12))
         self.fileLabel.grid(column=0, row=0, columnspan=4)
 
-        self.shiftUp = Button(self.fileFrame, bg="#263D42",
-                              text="↑", fg="white", anchor=N, command=lambda: moveItemUp(self.index))
+        self.shiftUp = Button(self.fileFrame, bg=mainColor,
+                              text="↑", fg=textColor, anchor=N, command=lambda: moveItemUp(self.index))
         self.shiftUp.grid(column=4, row=0, padx=5, pady=10)
 
         self.shiftDown = Button(
-            self.fileFrame, bg="#263D42", text="↓", fg="white", anchor=N, command=lambda: moveItemDown(self.index))
+            self.fileFrame, bg=mainColor, text="↓", fg=textColor, anchor=N, command=lambda: moveItemDown(self.index))
         self.shiftDown.grid(column=5, row=0, pady=10, padx=(0, 40))
 
-        self.removeFile = Button(self.fileFrame, bg="#263D42",
-                                 text="X", fg="white", anchor=N, command=lambda: removeItem(self.index))
+        self.removeFile = Button(self.fileFrame, bg=mainColor,
+                                 text="X", fg=textColor, anchor=N, command=lambda: removeItem(self.index))
         self.removeFile.grid(column=6, row=0, pady=10)
 
 
@@ -172,12 +178,12 @@ def clearFiles():  # Clears all files from the array and frame
     files.clear()
 
 
-frame = Frame(root, bg="white", width=560, height=400)
+frame = Frame(root, bg=frameColor, width=560, height=400)
 frame.grid_propagate(0)
 frame.grid(row=0, column=0, padx=30, pady=30, columnspan=6, rowspan=6)
 
 destAddress_label = Label(
-    root, text="Destination Address:", bg="#263D42", fg="white")
+    root, text="Destination Address:", bg=mainColor, fg=textColor)
 destAddress_label.grid(row=7, column=0)
 
 destAddress = Entry(root, width=50)
@@ -186,37 +192,37 @@ destAddress.insert(0, destination)
 destAddress.config(state=DISABLED)
 
 mergedFile_label = Label(
-    root, text="New file name:", bg="#263D42", fg="white")
+    root, text="New file name:", bg=mainColor, fg=textColor)
 mergedFile_label.grid(row=8, column=0)
 
 mergedFileInput = Entry(root, width=50)
 mergedFileInput.grid(row=8, column=1, columnspan=3)
 mergedFileInput.insert(0, mergedFileName)
 
-fileFormatLabel = Label(root, bg="#263D42", fg="white",
+fileFormatLabel = Label(root, bg=mainColor, fg=textColor,
                         text=".pdf")
 fileFormatLabel.grid(row=8, column=4)
 
-findPath = Button(root, bg="#263D42", fg="white",
+findPath = Button(root, bg=mainColor, fg=textColor,
                   text="...", command=changePath)
 findPath.grid(row=7, column=4)
 
 varCheck = IntVar()
 deleteBox = Checkbutton(
-    root, text="Delete files after merging", bg="#263D42", fg="black", variable=varCheck)
+    root, text="Delete files after merging", bg=mainColor, fg=checkBoxColor, variable=varCheck)
 deleteBox.deselect()
 deleteBox.grid(row=9, column=0)
 
 openFile = Button(root, text="Open File", padx=10, pady=5, width=10,
-                  bg="#263D42", fg="white", command=isDuplicate)
+                  bg=mainColor, fg=textColor, command=isDuplicate)
 openFile.grid(row=7, column=5)
 
-convertFiles = Button(root, text="Convert Files", fg="white", width=10,
-                      bg="#263D42", padx=10, pady=5, command=convertFiles)
+convertFiles = Button(root, text="Convert Files", fg=textColor, width=10,
+                      bg=mainColor, padx=10, pady=5, command=convertFiles)
 convertFiles.grid(row=8, column=5, pady=15)
 
 clear = Button(root, text="Clear", padx=10, pady=5, width=10,
-               bg="#263D42", fg="white", command=clearFiles)
+               bg=mainColor, fg=textColor, command=clearFiles)
 clear.grid(row=9, column=5)
 
 root.mainloop()
@@ -231,7 +237,8 @@ root.mainloop()
 # Exceptions: Invalid File Names(Same file in same directory, Null name), File paths(Adding ".","/","\")
 # PermissionError
 # Order of files
-
 # design
 
+# Scroll Bars
 # Last 5 saved locations in selection menu
+# Position in Center
