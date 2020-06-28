@@ -13,6 +13,34 @@ root.title("Syntheziz")
 root.configure(bg="#263D42")
 
 
+class FrameItem():  # Individual Frame in list of files
+    def __init__(self, file, index):
+        self.file = file
+        self.fileName = self.file[self.file.rfind("/")+1:]
+        self.index = index
+
+        self.fileFrame = Frame(frame, bg="#263D42", width=558, height=45)
+        self.fileFrame.grid_propagate(0)
+        self.fileFrame.grid
+        self.fileFrame.grid(padx=1, pady=1)
+
+        self.fileLabel = Label(self.fileFrame, bg="#263D42", text=f'~ {self.fileName}',
+                               fg="white", width=48, anchor=W, font=("Times New Roman", 12))
+        self.fileLabel.grid(column=0, row=0, columnspan=4)
+
+        self.shiftUp = Button(self.fileFrame, bg="#263D42",
+                              text="↑", fg="white", anchor=N, command=lambda: moveItemUp(self.index))
+        self.shiftUp.grid(column=4, row=0, padx=5, pady=10)
+
+        self.shiftDown = Button(
+            self.fileFrame, bg="#263D42", text="↓", fg="white", anchor=N, command=lambda: moveItemDown(self.index))
+        self.shiftDown.grid(column=5, row=0, pady=10, padx=(0, 40))
+
+        self.removeFile = Button(self.fileFrame, bg="#263D42",
+                                 text="X", fg="white", anchor=N, command=lambda: removeItem(self.index))
+        self.removeFile.grid(column=6, row=0, pady=10)
+
+
 def isDuplicate():  # Checks for duplicate files in files array and asks users for permission
     selectedFiles = filedialog.askopenfilenames(initialdir="/", title="Select Files",
                                                 filetypes=(("PDF", "*.pdf"), ("All Files", "*.*")))
@@ -30,27 +58,20 @@ def isDuplicate():  # Checks for duplicate files in files array and asks users f
 
 
 def addFile(file):  # Adds a file to files array and file name to frame
+    addFrameItem = FrameItem(file, len(files))
     files.append(file)
-    fileName = file[file.rfind("/")+1:]
 
-    fileFrame = Frame(frame, bg="#263D42", width=558, height=45)
-    fileFrame.grid_propagate(0)
-    fileFrame.grid
-    fileFrame.grid(padx=1, pady=1)
 
-    fileLabel = Label(fileFrame, bg="#263D42", text=f'~ {fileName}',
-                      fg="white", width=48, anchor=W, font=("Times New Roman", 12))
-    fileLabel.grid(column=0, row=0, columnspan=4)
+def refreshFrameItems():  # Refreshes list of files if the order is changed or files are deleted
 
-    shiftUp = Button(fileFrame, bg="#263D42", text="↑", fg="white", anchor=N)
-    shiftUp.grid(column=4, row=0, padx=5, pady=10)
+    for widget in frame.winfo_children():
+        widget.destroy()
 
-    shiftDown = Button(fileFrame, bg="#263D42", text="↓", fg="white", anchor=N)
-    shiftDown.grid(column=5, row=0, pady=10, padx=(0, 40))
+        index = 0
 
-    removeFile = Button(fileFrame, bg="#263D42",
-                        text="X", fg="white", anchor=N)
-    removeFile.grid(column=6, row=0, pady=10)
+    for file in files:
+        addFrameItem = FrameItem(file, index)
+        index += 1
 
 
 def convertFiles():  # Makes use of PyPDF library to merge selected files in files array
@@ -105,12 +126,13 @@ def deleteFiles():  # deletes files after merging if checkbox is selected
 
         if response == 1:
             for file in files:
+                fileName = file[file.rfind("/")+1:]
                 try:
                     os.remove(file)
 
                 except PermissionError as err:
                     title = "Delete Error"
-                    content = "Files could not be deleted.\n Please make sure the files are not being used before deletion."
+                    content = f" {fileName} file could not be deleted.\n Please make sure that the file is not being used before deletion."
                     messagebox.showerror(title, content)
 
                 except Exception as err:
@@ -121,14 +143,33 @@ def deleteFiles():  # deletes files after merging if checkbox is selected
             clearFiles()
 
 
+def moveItemUp(index):  # Move a file up in the list when the up arrow button is clicked
+    if index > 0:
+        tmp = files[index]
+        files[index] = files[index-1]
+        files[index-1] = tmp
+
+        refreshFrameItems()
+
+
+def moveItemDown(index):  # Move a file down in the list when the down arrow button is clicked
+    if index < len(files) - 1:
+        tmp = files[index]
+        files[index] = files[index+1]
+        files[index+1] = tmp
+
+        refreshFrameItems()
+
+
+def removeItem(index):  # Remove an item from the list when the delete(X) button is pressed
+    removed = files.pop(index)
+    refreshFrameItems()
+
+
 def clearFiles():  # Clears all files from the array and frame
     for widget in frame.winfo_children():
         widget.destroy()
     files.clear()
-
-
-def test():
-    pass
 
 
 frame = Frame(root, bg="white", width=560, height=400)
@@ -178,13 +219,10 @@ clear = Button(root, text="Clear", padx=10, pady=5, width=10,
                bg="#263D42", fg="white", command=clearFiles)
 clear.grid(row=9, column=5)
 
-testButton = Button(root, text="Test", padx=10, pady=5, width=10,
-                    bg="#263D42", fg="white", command=test)
-testButton.grid(row=10, column=5)
-
 root.mainloop()
 
-# # Grid
+# Features
+# Grid
 # file duplication
 # change destination
 # custom file name
@@ -192,6 +230,8 @@ root.mainloop()
 # File merged message
 # Exceptions: Invalid File Names(Same file in same directory, Null name), File paths(Adding ".","/","\")
 # PermissionError
-
 # Order of files
+
 # design
+
+# Last 5 saved locations in selection menu
