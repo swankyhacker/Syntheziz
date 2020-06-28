@@ -46,8 +46,18 @@ def convertFiles():  # Makes use of PyPDF library to merge selected files in fil
 
         # Check if same file already exists in the same directory
         if not os.path.exists(mergedFilePath):
-            merger.write(mergedFilePath)
+            try:
+                merger.write(mergedFilePath)
+
+            except Exception as err:
+                title = "Error!!!"
+                content = err
+                messagebox.showerror(title, content)
+
             merger.close()    # Close  merger before file deletion to avoid PermissionError
+            title = "Merge Success!!!"
+            content = f"The files have been successfully merged as {mergedFileInput.get()}.pdf\n Please check the result in {mergedFilePath}"
+            messagebox.showinfo(title, content)
             deleteFiles()
 
         else:
@@ -77,9 +87,19 @@ def deleteFiles():  # deletes files after merging if checkbox is selected
         response = messagebox.askyesno(title, content)
 
         if response == 1:
-
             for file in files:
-                os.remove(file)
+                try:
+                    os.remove(file)
+
+                except PermissionError as err:
+                    title = "Delete Error"
+                    content = "Files could not be deleted.\n Please make sure the files are not being used before deletion."
+                    messagebox.showerror(title, content)
+
+                except Exception as err:
+                    title = "Delete Error"
+                    content = err
+                    messagebox.showerror(title, content)
 
             clearFiles()
 
@@ -152,12 +172,9 @@ root.mainloop()
 # change destination
 # custom file name
 # delete files
-
-# disable window during popups
-# Order of files
 # File merged message
-
 # Exceptions: Invalid File Names(Same file in same directory, Null name), File paths(Adding ".","/","\")
 # PermissionError
 
+# Order of files
 # design
